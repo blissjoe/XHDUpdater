@@ -273,6 +273,8 @@ void __cdecl main()
 	bool deviceCreated = CreateDevice();
 
 	Drawing::GenerateBitmapFont();
+
+    InputManager::Init();
 	
 	InitTerminalBuffer();
 

@@ -26,7 +26,7 @@ typedef struct {
 } rectf;
 
 #define FONT_TEXTURE_DIMENSION 1024
-#define DRAW_BATCH_MAX_VERTS 16380
+#define DRAW_BATCH_MAX_VERTS 8190
 
 /* One vertex for terminal batch: XYZ + diffuse + UV (matches D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1) */
 struct terminal_vertex_t {
