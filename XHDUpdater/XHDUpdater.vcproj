@@ -67,7 +67,7 @@
 				DontModifyHD="TRUE"
 				DontMountUD="TRUE"
 				NoLibWarn="TRUE"
-				TitleID="0x5452ffff"
+				TitleID="0x5452fffe"
 				TitleName="Hermes Menu"
 				TitleImage="$(ProjectDir)titleimage.xpr"
 				XBEVersion="1"/>
@@ -129,8 +129,8 @@
 				LimitAvailableMemoryTo64MB="FALSE"
 				DontModifyHD="TRUE"
 				DontMountUD="TRUE"
-				TitleID="0x5452ffff"
-				TitleName="Hermes Menu"
+				TitleID="0x5452fffe"
+				TitleName="X-HD Updater"
 				TitleImage="$(ProjectDir)titleimage.xpr"
 				XBEVersion="1"/>
 		</Configuration>

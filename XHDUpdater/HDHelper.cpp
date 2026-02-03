@@ -207,19 +207,18 @@ bool HDHelper::FlashApplication(uint8_t* firmware, uint32_t firmwareSize)
         memcpy(buffer, firmware + firmwareOffset, chunkSize);
         uint32_t checksumBuffer = CRC32::Calculate(buffer, 1024);
 
-        TerminalBuffer::Write("Writing Page: %i (%08x)", page, checksumBuffer);
-        WritePage(page, buffer);
-
-        uint32_t checksumRam = ReadPageChecksum(page);
-        if (checksumRam != checksumBuffer)
+        while (true)
         {
-            TerminalBuffer::Write(" - Failed\n");
-            free(buffer);    
-            return false;
-        }           
-        else
-        {
+            TerminalBuffer::Write("Writing Page: %i (%08x)", page, checksumBuffer);
+            WritePage(page, buffer);
+            uint32_t checksumRam = ReadPageChecksum(page);
+            if (checksumRam != checksumBuffer)
+            {
+                TerminalBuffer::Write(" - Failed (Retrying)\n");
+                continue;
+            }           
             TerminalBuffer::Write(" - OK\n");
+            break;
         }
 
         firmwareOffset += chunkSize;

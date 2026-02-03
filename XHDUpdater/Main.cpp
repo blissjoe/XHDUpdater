@@ -110,6 +110,8 @@ static void InitTerminalBuffer()
         TerminalBuffer::Write("Found\n\n");
     }
 
+    TerminalBuffer::Write("Note: screen will flash when changing X-HD mode.\n\n");
+
     TerminalBuffer::Write("Press A to Flash\n");
     WaitButton(JoystickButtonA);
     TerminalBuffer::Write("Press X to Confirm\n\n");
@@ -127,6 +129,23 @@ static void InitTerminalBuffer()
     TerminalBuffer::Write("Entering Application Mode: ");
     HDHelper::ChangeMode(I2C_HDMI_MODE_APPLICATION);
     TerminalBuffer::Write("Done\n");
+
+    TerminalBuffer::Write("New Firmware: ");
+    version = HDHelper::ReadVersion();
+    if (version == 0xFFFFFFFF)
+    {
+        TerminalBuffer::Write("Not detected\n");
+        return;
+    }
+    else
+    {
+        char line[50];
+        _snprintf(line, sizeof(line), "%u.%u.%u\n",
+            (unsigned)((version >> 24) & 0xFF),
+            (unsigned)((version >> 16) & 0xFF),
+            (unsigned)((version >> 8) & 0xFF));
+        TerminalBuffer::Write(line);
+    }
 }
 
 bool SupportsMode(DISPLAY_MODE mode, DWORD dwVideoStandard, DWORD dwVideoFlags)
