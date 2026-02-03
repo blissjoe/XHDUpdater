@@ -1,7 +1,7 @@
-# Xbox HD Firmware Writer
+# X-HD Firmware Writer
 
-Xbox application for writing firmware to the Xbox HD HDMI kit via I2C/SMBus.
+Xbox application for writing firmware to the X-HD kit via I2C/SMBus.
 
 ## Screenshot
 
-![Xbox HD Firmware Writer](Images/Screenshot.png)
+![X-HD Firmware Writer](Images/Screenshot.png)

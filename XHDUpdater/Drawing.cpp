@@ -34,8 +34,6 @@ struct terminal_vertex_t {
     float u, v;
 };
 
-#define TERMINAL_MAX_VERTS (TerminalBuffer::Cols * TerminalBuffer::Rows * 6)
-
 namespace
 {
 	ssfn_t* mFontContext = NULL;
@@ -255,19 +253,19 @@ void Drawing::Init()
 
 void Drawing::DrawTerminal(const char* buffer, uint32_t color)
 {
-    const int cellW = Drawing::GetBufferWidth() / TerminalBuffer::Cols;
-    const int cellH = Drawing::GetBufferHeight() / TerminalBuffer::Rows;
+    const int cellW = TERMINAL_FONT_SIZE_WIDTH;
+    const int cellH = TERMINAL_FONT_SIZE_HEIGHT;
     const float bufH = (float)Drawing::GetBufferHeight();
     const float invDim = 1.0f / (float)FONT_TEXTURE_DIMENSION;
 
     terminal_vertex_t* v = s_terminalVerts;
     int nVerts = 0;
 
-    for (int row = 0; row < TerminalBuffer::Rows; row++)
+    for (int row = 0; row < TerminalBuffer::GetRows(); row++)
     {
-        for (int col = 0; col < TerminalBuffer::Cols; col++)
+        for (int col = 0; col < TerminalBuffer::GetCols(); col++)
         {
-            char c = buffer[row * TerminalBuffer::Cols + col];
+            char c = buffer[(row * TerminalBuffer::GetCols()) + col];
             std::map<uint32_t, recti>::iterator it = charMap.find((uint32_t)(unsigned char)c);
             if (it == charMap.end())
             {
@@ -281,7 +279,7 @@ void Drawing::DrawTerminal(const char* buffer, uint32_t color)
             float v1 = (r.y + r.height) * invDim;
 
             float px = (float)(col * cellW) - 0.5f;
-            float py = bufH - ((float)(row  * cellH)) - 0.5f;
+            float py = bufH - ((float)((row + 1)  * cellH)) - 0.5f;
             float pz = 0.0f;
             float fw = (float)cellW;
             float fh = (float)cellH;

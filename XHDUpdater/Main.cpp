@@ -48,12 +48,12 @@ DISPLAY_MODE displayModes[] =
 
 #define NUM_MODES (sizeof(displayModes) / sizeof(displayModes[0]))
 
-static void WaitButton()
+static void WaitButton(JoystickButton joystickButton)
 {
 	while (true)
 	{
 		InputManager::ProcessController();
-		if (InputManager::ButtonDown(JoystickButtonA))
+		if (InputManager::ButtonPressed(joystickButton))
 		{
 			return;
 		}
@@ -65,28 +65,68 @@ static void InitTerminalBuffer()
 {
     TerminalBuffer::Clear();
 
-    TerminalBuffer::SetCursor(0, 1);
-    TerminalBuffer::Write("Xbox HD Firmware Writer\n");
-    TerminalBuffer::Write("=======================\n");
+    TerminalBuffer::SetCursor(0, 0);
+    TerminalBuffer::Write("X-HD Firmware Flasher\n");
+    TerminalBuffer::Write("=====================\n");
     TerminalBuffer::Write("\n");
 
+    TerminalBuffer::Write("Encoder: ");
+    HDHelper::EncoderEnum encoder = HDHelper::GetEncoder();
+    if (encoder = HDHelper::EncoderConexant) {
+        TerminalBuffer::Write("Conexant\n");
+    } else if (encoder = HDHelper::EncoderFocus) {
+        TerminalBuffer::Write("Focus\n");
+    } else if (encoder = HDHelper::EncoderXcalibur) {
+        TerminalBuffer::Write("Xcalibur\n");
+    }
+
+    TerminalBuffer::Write("Current Firmware: ");
     uint32_t version = HDHelper::ReadVersion();
-    char line[48];
     if (version == 0xFFFFFFFF)
     {
-        _snprintf(line, sizeof(line), "Detected version: Not detected\n");
+        TerminalBuffer::Write("Not detected\n");
+        return;
     }
     else
     {
-        _snprintf(line, sizeof(line), "Detected version: %u.%u.%u\n",
+        char line[50];
+        _snprintf(line, sizeof(line), "%u.%u.%u\n",
             (unsigned)((version >> 24) & 0xFF),
             (unsigned)((version >> 16) & 0xFF),
             (unsigned)((version >> 8) & 0xFF));
+        TerminalBuffer::Write(line);
     }
-    TerminalBuffer::Write(line);
 
-    //TerminalBuffer::SetCursor(0, TerminalBuffer::Rows - 1);
-    //TerminalBuffer::Write("  Ready.                                  ");
+    TerminalBuffer::Write("Firmware To Write: ");
+    uint32_t firmwareSize = 0;
+    uint8_t* firmwareData = HDHelper::LoadFirmware(&firmwareSize);
+    if (firmwareData == NULL)
+    {
+        TerminalBuffer::Write("Not Found\n\n");
+        return;
+    }
+    else
+    {
+        TerminalBuffer::Write("Found\n\n");
+    }
+
+    TerminalBuffer::Write("Press A to Flash\n");
+    WaitButton(JoystickButtonA);
+    TerminalBuffer::Write("Press X to Confirm\n\n");
+    WaitButton(JoystickButtonX);
+
+    TerminalBuffer::Write("Entering Bootloader Mode: ");
+    HDHelper::ChangeMode(I2C_HDMI_MODE_BOOTLOADER);
+    TerminalBuffer::Write("Done\n");
+
+    if (HDHelper::FlashApplication(firmwareData, firmwareSize) == false)
+    {
+        return;
+    }
+    
+    TerminalBuffer::Write("Entering Application Mode: ");
+    HDHelper::ChangeMode(I2C_HDMI_MODE_APPLICATION);
+    TerminalBuffer::Write("Done\n");
 }
 
 bool SupportsMode(DISPLAY_MODE mode, DWORD dwVideoStandard, DWORD dwVideoFlags)
@@ -138,8 +178,8 @@ bool CreateDevice()
         return false;
 	}
 
-	Drawing::SetBufferWidth(720);
-	Drawing::SetBufferHeight(480);
+	Drawing::SetBufferWidth(displayModes[currentMode].dwWidth);
+	Drawing::SetBufferHeight(displayModes[currentMode].dwHeight);
 
 	D3DPRESENT_PARAMETERS params; 
     ZeroMemory(&params, sizeof(params));
@@ -209,6 +249,6 @@ void __cdecl main()
 	InitTerminalBuffer();
 
     TerminalBuffer::Write("\nPress A to Exit");
-    WaitButton();
+    WaitButton(JoystickButtonA);
     HalReturnToFirmware(2);
 }

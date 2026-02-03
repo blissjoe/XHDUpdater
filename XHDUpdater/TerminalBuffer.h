@@ -2,17 +2,22 @@
 
 #include "External.h"
 
+#include <string>
+
+#define TERMINAL_FONT_SIZE_WIDTH 8
+#define TERMINAL_FONT_SIZE_HEIGHT 16
+#define TERMINAL_MAX_COLS 255
+#define TERMINAL_MAX_ROWS 255
+#define TERMINAL_MAX_VERTS (TERMINAL_MAX_ROWS * TERMINAL_MAX_COLS * 6)
+
 class TerminalBuffer
 {
 public:
-    static const int Cols = 40;
-    static const int Rows = 30;
-
+    static void Init();
     static void Clear();
     static void SetCursor(int x, int y);
-    static void Write(const char* text);
+    static void Write(std::string message, ...);
     static void ScrollUp();
-
     static const char* GetBuffer();
     static int GetCols();
     static int GetRows();

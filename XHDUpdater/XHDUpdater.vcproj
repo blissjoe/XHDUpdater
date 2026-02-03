@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="XboxHDUpdater"
+	Name="XHDUpdater"
 	ProjectGUID="{03813F8D-2AD5-44E4-B724-44240DB90B0B}"
 	RootNamespace="CerbiosRecovery"
 	Keyword="XboxProj">
@@ -143,10 +143,19 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\CRC32.cpp">
+			</File>
+			<File
+				RelativePath=".\CRC32.h">
+			</File>
+			<File
 				RelativePath=".\Debug.cpp">
 			</File>
 			<File
 				RelativePath=".\Debug.h">
+			</File>
+			<File
+				RelativePath=".\Defines.h">
 			</File>
 			<File
 				RelativePath=".\Drawing.cpp">
